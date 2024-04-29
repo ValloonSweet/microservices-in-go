@@ -8,6 +8,7 @@
                 <hr>
                 <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Broker</a>
                 <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Authentication</a>
+                <a id="logBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Log</a>
 
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output shows here...</span>
@@ -35,6 +36,7 @@
     <script>
         let brokerBtn = document.getElementById("brokerBtn");
         let authBrokerBtn = document.getElementById("authBrokerBtn");
+        let logBtn = document.getElementById("logBtn");
         let output = document.getElementById("output");
         let sent = document.getElementById("payload");
         let received = document.getElementById("received");
@@ -67,6 +69,40 @@
                 auth: {
                     email: "admin@example.com",
                     password: "verysecret"
+                }
+            }
+
+            const headers = new Headers();
+            headers.append("Content-Type", "application/json");
+
+            const body = {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: headers
+            }        
+
+            fetch("http:\/\/localhost:8080/handle", body)
+                .then(response => response.json())
+                .then(data => {
+                    sent.innerHTML = JSON.stringify(payload, undefined, 4);
+                    received.innerHTML = JSON.stringify(data, undefined, 4);
+                    if (data.error) {
+                        output.innerHTML += `<br><string>Error:</string> ${data.message}`;
+                    } else {
+                        output.innerHTML += `<br><strong><Reponse from broker service</strong>: ${data.message}`;
+                    }
+                })
+                .catch(error => {
+                    output.innerHTML += `<br><br>Error: ${error}`;
+                })
+        })
+
+        logBtn.addEventListener("click", function() {
+            const payload = {
+                action: "log",
+                log: {
+                    name: "log name",
+                    data: "log data"
                 }
             }
 
