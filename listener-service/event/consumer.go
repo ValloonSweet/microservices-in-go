@@ -63,10 +63,6 @@ func (consumer *Consumer) Listen(topics []string) error {
 			false,
 			nil,
 		)
-
-		if err != nil {
-			return err
-		}
 	}
 
 	messages, err := ch.Consume(q.Name, "", true, false, false, false, nil)
